@@ -20,7 +20,6 @@ const saveMessage = async (message) => {
   sender: message.sender,
   status:'Accepted',
  })
- 
  messageData.save()
  return messageData
 }

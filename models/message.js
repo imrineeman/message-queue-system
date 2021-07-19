@@ -9,7 +9,7 @@ const messageSchema = new mongoose.Schema({
    type: Date,
    default:null
  }
-})
+},{timestamps:true});
 
 messageSchema.set('toJSON', {
  transform: (document, returnedObject) => {
@@ -19,7 +19,7 @@ messageSchema.set('toJSON', {
  },
 });
 
-messageSchema.index({expireAt: 1},{expireAfterSeconds: 20});
+messageSchema.index({expireAt: 1},{expireAfterSeconds: 3600});
 
 const Message = mongoose.model('Message', messageSchema);
 
