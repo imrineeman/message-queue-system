@@ -24,7 +24,7 @@ const popAllQueuedMessages = async () => {
       } else {
         flag = false
         return
-      }
+    }
   }
 }
 
