@@ -3,7 +3,6 @@ const morgan = require('morgan');
 const messageService = require('./services/messageService')
 const mongoose = require('mongoose')
 const config = require('./utils/config')
-const cron = require('node-cron')
 const app = express()
 
 app.use(morgan('tiny'));
@@ -15,16 +14,15 @@ mongoose.connect(config.MONGO_URI, {
   useCreateIndex: true,
 });
 
-const forwardMessage = async () => {
+const popAllQueuedMessages = async () => {
   let bool = true
-  while (bool){
+  while (bool) {
     const response = await messageService.getLatestJob()
         if (response && response.status !=='Failed') {
-          console.log('Forwarding message for 3rd party!')
-          setTimeout(()=>{console.log('finished')},200)
+          console.log('Forwarding message for 3rd party!',Date.now())
+          setTimeout(()=>{},100)
       } else {
         flag = false
-        console.log('Message not forwarded!')
         return
       }
   }
@@ -36,7 +34,7 @@ app.get('/', (req, res) => {
 })
 
 app.get('/queue', async (req,res) => {
-  await forwardMessage()
+  await popAllQueuedMessages()
   return res.status(200).json({'status':'Message queue is empty'})
 })
 

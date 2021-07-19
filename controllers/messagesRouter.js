@@ -21,7 +21,7 @@ messagesRouter.get('/queue',async (req,res) => {
 messagesRouter.post('/', async (req,res) => {
  try {
   const result = await messageService.saveMessage(req.body)
-  axios.get(`http://localhost:3004/queue`)
+  axios.get(`http://localhost:${String(config.LIMITER_PORT)}/queue`)
   res.status(201).json(result)
  } catch(err){
   res.status(400).json({error:err.name})
