@@ -29,7 +29,7 @@ const getLatestJob = async () => {
 
  latestInQueue = await Message.findOne({status:'Accepted'})
  if (!latestInQueue) {
-  return {'error':'No jobs in queue!'}
+  return null
  }
 
  updatedMessage = {
@@ -40,9 +40,6 @@ const getLatestJob = async () => {
   'Failed' : 'Sent',
   'expireAt': Date.now(),
  }
-
-  // try / catch block for posting & validaing to 3rd party, only if 'status' != failed
-  // If successful response from 3rd party execute below
 
  updatedMessage = await Message.findOneAndUpdate({
   _id:latestInQueue._id

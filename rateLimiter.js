@@ -3,9 +3,9 @@ const morgan = require('morgan');
 const messageService = require('./services/messageService')
 const mongoose = require('mongoose')
 const config = require('./utils/config')
-const slowDown = require("express-slow-down");
-
+const cron = require('node-cron')
 const app = express()
+
 app.use(morgan('tiny'));
 
 mongoose.connect(config.MONGO_URI, {
@@ -13,27 +13,34 @@ mongoose.connect(config.MONGO_URI, {
   useUnifiedTopology: true,
   useFindAndModify: false,
   useCreateIndex: true,
- });
+});
 
-const speedLimiter = slowDown({
-  windowMs:1000,
-  delayAfter:10,
-  delayMs:1000,
-})
+const forwardMessage = async () => {
+  let bool = true
+  while (bool){
+    const response = await messageService.getLatestJob()
+        if (response && response.status !=='Failed') {
+          console.log('Forwarding message for 3rd party!')
+          setTimeout(()=>{console.log('finished')},200)
+      } else {
+        flag = false
+        console.log('Message not forwarded!')
+        return
+      }
+  }
+}
 
-app.use(speedLimiter)
 app.get('/', (req, res) => {
   console.log('Hi!')
-  response.send('<h1>Hello World!</h1>')
+  res.send('<h1>Hello World!</h1>')
 })
 
 app.get('/queue', async (req,res) => {
-  const response = await messageService.getLatestJob()
-  return res.status(200).json(response)
+  await forwardMessage()
+  return res.status(200).json({'status':'Message queue is empty'})
 })
 
-const PORT = 3004
-app.listen(PORT, () => {
-  console.log(`Limiter running on port ${PORT}`)
+app.listen(config.LIMITER_PORT, () => {
+  console.log(`Limiter running on port ${config.LIMITER_PORT}`)
 })
 

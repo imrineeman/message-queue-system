@@ -1,7 +1,7 @@
 require('dotenv').config();
 
 const SERVER_PORT = 3005;
-const LIMITER_PORT = 3003;
+const LIMITER_PORT = 3004;
 const SENDER_URL = 'some.3rd.party/'
 const MONGO_URI = process.env.MONGO_URI
 
